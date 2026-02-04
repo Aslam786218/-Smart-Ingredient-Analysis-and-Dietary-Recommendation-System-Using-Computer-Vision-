@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Product Info</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+</head>
+<body class="bg-light p-4">
+    <div class="container">
+        <div class="card shadow-lg">
+            <div class="card-body">
+                <div class="row">
+                    <!-- Left side: product details -->
+                    <div class="col-md-8">
+                        <h1 class="card-title text-primary">{{ info['product_name'] }}</h1>
+                        <h5 class="text-muted mb-4">Brand: {{ info['brands'] }}</h5>
+
+                        <h4 class="mb-3">Nutritional Info (per 100g)</h4>
+                        <table class="table table-bordered w-75">
+                            <tr>
+                                <th>Energy</th>
+                                <td>{{ info['nutriments']['energy_100g'] }}</td>
+                            </tr>
+                            <tr>
+                                <th>Fat</th>
+                                <td>{{ info['nutriments']['fat_100g'] }}</td>
+                            </tr>
+                            <tr>
+                                <th>Sugars</th>
+                                <td>{{ info['nutriments']['sugars_100g'] }}</td>
+                            </tr>
+                            <tr>
+                                <th>Proteins</th>
+                                <td>{{ info['nutriments']['proteins_100g'] }}</td>
+                            </tr>
+                        </table>
+
+                        <a href="/" class="btn btn-secondary mt-3">⬅ Back to Home</a>
+                    </div>
+
+                    <!-- Right side: product image -->
+                    <div class="col-md-4 text-center">
+                        {% if info['image_url'] %}
+                            <img src="{{ info['image_url'] }}" alt="Product Image" class="img-fluid rounded shadow-sm">
+                        {% else %}
+                            <div class="alert alert-warning">No product image available</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

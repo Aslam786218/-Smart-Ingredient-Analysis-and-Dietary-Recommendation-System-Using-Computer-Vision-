@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Food AI Prototype</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+</head>
+<body class="p-4">
+    <div class="container">
+        <h1 class="mb-4">Food Recognition Prototype</h1>
+        <p class="lead">Enter a barcode OR use camera / upload an image</p>
+
+        <!-- Barcode form -->
+        <form method="POST" action="/search" class="mb-4">
+            <div class="mb-3">
+                <input type="text" name="barcode" class="form-control" placeholder="Enter Barcode">
+            </div>
+            <button type="submit" class="btn btn-primary">Search by Barcode</button>
+        </form>
+
+        <hr>
+
+        <!-- Upload form -->
+        <h4>Upload Image</h4>
+        <form method="POST" action="/upload" enctype="multipart/form-data" class="mb-4">
+            <div class="mb-3">
+                <input type="file" name="image" accept="image/*" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-success">Upload Image</button>
+        </form>
+
+        <hr>
+
+        <!-- Live camera -->
+        <h4>Live Camera</h4>
+        <video id="video" width="320" height="240" autoplay class="border"></video>
+        <br>
+        <button id="capture" class="btn btn-warning mt-2">Capture & Upload</button>
+        <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
+
+        <!-- Hidden form to upload the captured frame -->
+        <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data" style="display:none;">
+            <input type="file" name="image" id="imageInput">
+        </form>
+    </div>
+
+    <script>
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const captureBtn = document.getElementById('capture');
+        const uploadForm = document.getElementById('uploadForm');
+        const imageInput = document.getElementById('imageInput');
+
+        // Request camera stream
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => { video.srcObject = stream; })
+            .catch(err => { console.error("Camera error:", err); });
+
+        // Capture frame & upload
+        captureBtn.addEventListener('click', () => {
+            const context = canvas.getContext('2d');
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            canvas.toBlob(blob => {
+                const file = new File([blob], "capture.jpg", { type: "image/jpeg" });
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                imageInput.files = dataTransfer.files;
+                uploadForm.submit();
+            }, "image/jpeg");
+        });
+    </script>
+</body>
+</html>
